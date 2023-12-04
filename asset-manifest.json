@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/goit-react-hw-04-image/static/css/main.1a2478dc.css",
+    "main.js": "/goit-react-hw-04-image/static/js/main.ae2403f3.js",
+    "index.html": "/goit-react-hw-04-image/index.html",
+    "static/media/magnifying-glass.svg": "/goit-react-hw-04-image/static/media/magnifying-glass.302e7af0acfa0ec870aa.svg",
+    "main.1a2478dc.css.map": "/goit-react-hw-04-image/static/css/main.1a2478dc.css.map",
+    "main.ae2403f3.js.map": "/goit-react-hw-04-image/static/js/main.ae2403f3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1a2478dc.css",
+    "static/js/main.ae2403f3.js"
+  ]
+}
