@@ -1,36 +1,32 @@
 import css from './Modal.module.css';
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-export class Modal extends Component {
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
-  }
+export const Modal = ({ selectedImage, onCloseModal }) => {
+  useEffect(() => {
+    const handleKeyDown = event => {
+      if (event.key === 'Escape') {
+        onCloseModal();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown);
-  }
-
-  handleKeyDown = event => {
-    if (event.key === 'Escape') {
-      this.props.onCloseModal(); // Wywołujemy funkcję zamykającą modal
-    }
+  const handleCloseModal = event => {
+    onCloseModal();
   };
-  handleCloseModal = event => {
-    this.props.onCloseModal();
-  };
 
-  render() {
-    const { selectedImage } = this.props;
-    return (
-      <div className={css.overlay} onClick={this.handleCloseModal}>
-        <div className={css.modal}>
-          <img src={selectedImage.largeImageURL} alt={selectedImage.tags} />
-        </div>
+  return (
+    <div className={css.overlay} onClick={handleCloseModal}>
+      <div className={css.modal}>
+        <img src={selectedImage.largeImageURL} alt={selectedImage.tags} />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 Modal.propTypes = {
   selectedImage: PropTypes.shape({

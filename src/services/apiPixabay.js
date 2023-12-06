@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-
 const urlApi = `https://pixabay.com/api/`;
 const apiKey = '9318257-96b567a3bb5708a16f509a99b';
 
