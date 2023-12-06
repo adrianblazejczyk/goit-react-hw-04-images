@@ -13,7 +13,7 @@ export const Modal = ({ selectedImage, onCloseModal }) => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [onCloseModal]);
 
   const handleCloseModal = event => {
     onCloseModal();
