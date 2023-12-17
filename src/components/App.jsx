@@ -5,73 +5,67 @@ import { SearchBar, Loader, ImageGallery, Button, Modal } from '../components';
 import { searchImage } from '../services';
 
 export const App = () => {
-  const [hits, SetHits] = useState([]);
-  const [searchKey, SetSearchKey] = useState('');
-  const [totalPages, SetTotalPages] = useState(0);
-  const [activePage, SetActivePage] = useState(1);
-  const [isLoading, SetIsLoading] = useState(false);
-  const [isOpenModal, SetIsOpenModal] = useState(false);
-  const [selectedImageId, SetSelectedImageId] = useState(0);
+  const [hits, setHits] = useState([]);
+  const [searchKey, setSearchKey] = useState('');
+  const [totalPages, setTotalPages] = useState(0);
+  const [activePage, setActivePage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [selectedHit, setSelectedHit] = useState({});
 
   useEffect(() => {
-    if (searchKey) {
-      SetIsLoading(true);
+    if (!searchKey) return;
+    setIsLoading(true);
 
-      searchImage(searchKey, activePage)
-        .then(response => {
-          if (!response.totalHits) {
-            Notiflix.Notify.warning(
-              'Sorry, there are no images matching your search query. Please try again.'
-            );
-          }
-          if (activePage > 1) {
-            SetHits(prevHits => [...prevHits, ...response.hits]);
-          } else {
-            Notiflix.Notify.success(`We found ${response.totalHits} images.`);
-            SetHits([...response.hits]);
-            SetTotalPages(Math.floor(response.totalHits / 12));
-          }
-          if (activePage > Math.floor(response.totalHits / 12)) {
-            Notiflix.Notify.warning(
-              'All images from the database are displayed'
-            );
-          }
-        })
+    searchImage(searchKey, activePage)
+      .then(response => {
+        if (activePage > 1) {
+          setHits(prevHits => [...prevHits, ...response.hits]);
+        } else {
+          Notiflix.Notify.success(`We found ${response.totalHits} images.`);
+          setHits([...response.hits]);
+          setTotalPages(Math.floor(response.totalHits / 12));
+        }
+        if (!response.totalHits) {
+          Notiflix.Notify.warning(
+            'Sorry, there are no images matching your search query. Please try again.'
+          );
+          return;
+        }
+        if (activePage > Math.floor(response.totalHits / 12)) {
+          Notiflix.Notify.warning('All images from the database are displayed');
+        }
+      })
 
-        .catch(error => {
-          Notiflix.Notify.failure('Something went wrong! Please, try again.');
-          console.log(error);
-        })
-        .finally(() => {
-          SetIsLoading(false);
-        });
-    }
+      .catch(error => {
+        Notiflix.Notify.failure('Something went wrong! Please, try again.');
+        console.log(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [activePage, searchKey]);
 
   const handlerSearch = searchKey => {
-    SetSearchKey(searchKey);
-    SetActivePage(1);
+    setSearchKey(searchKey);
+    setActivePage(1);
   };
 
   const handlerLoadMoreImage = () => {
-    SetActivePage(prevActivePage => prevActivePage + 1);
+    setActivePage(prevActivePage => prevActivePage + 1);
   };
 
   const handlerOpenModal = eve => {
     const { id } = eve.target;
     const numericId = parseInt(id, 10);
-    SetSelectedImageId(numericId);
-    SetIsOpenModal(true);
+    setSelectedHit(hits.find(item => item.id === numericId));
+    setIsOpenModal(true);
   };
+
   const handlerCloseModal = () => {
-    SetIsOpenModal(false);
+    setIsOpenModal(false);
   };
 
-  let selectedImage = null;
-
-  if (selectedImageId) {
-    selectedImage = hits.find(item => item.id === selectedImageId);
-  }
   return (
     <div className={css.App}>
       <SearchBar onSubmit={handlerSearch} />
@@ -89,7 +83,7 @@ export const App = () => {
       )}
       {isOpenModal && (
         <Modal
-          selectedImage={selectedImage}
+          selectedImage={selectedHit}
           onCloseModal={handlerCloseModal}
         ></Modal>
       )}
